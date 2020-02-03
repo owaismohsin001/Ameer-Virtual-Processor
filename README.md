@@ -30,19 +30,19 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 11 - IFEQUAL | Add either True or False on the stack depending on if first and second values on the stack are equal and pops conditions.
 
-12 - modulus
+12 - modulus | Modulus of first two values from stack and append the result onto it.
 
-13 - INCrement         
+13 - INCrement | Increment the last number from the stack.
 
-14 - DECrement         
+14 - DECrement | Decrement the last number from the stack.
 
-15 - Exponent            
+15 - Exponent | Exponent of first two values from stack and append the result onto it.   
 
-16 - Store                
+16 - Store | Store the first element from the stack in a heap of numbered name, numbered according to the given in the instruction.
 
-17 - Retrive
+17 - Retrive | Retrive and append from the storage onto the stack.
 
-18 - DELete
+18 - DELete | Delete an item from storage.
 
 19 - IFGREAT | Adds either True or False on the stack depending on if first is greater than the and second value on the stack and pops conditions.
 
