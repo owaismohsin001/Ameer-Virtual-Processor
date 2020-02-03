@@ -54,6 +54,7 @@ What follows is a (hopefully) comprehensive description of each instruction that
 **22 - IFMINUS |** Adds either True or False on the stack depending on if the first value on the stack is negative and pops conditions.
 
 **23 - IFUNEQUAL |** Adds either True or False on the stack depending on if first is unequal to the second value on the stack and pops conditions.
+
 **24 - IFEQUAL |** Adds either True or False on the stack depending on if first is equal to the second value on the stack and pops conditions. 
 
 **25 - IFSMALL |** Adds either True or False on the stack depending on if first is unequal to the second value on the stack and pops conditions.
