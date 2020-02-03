@@ -6,6 +6,7 @@ It can be ran on any python environment but for the sake of let's say performanc
 This VM is intended to be used for dynamic languages and so it's made dynamic in it's very nature. This currently supports variables in a heap and a string heap, arrays and strings. We hope to add built in functions in this very soon and to expand on our support of arrays and strings.
 ## Instruction Chart
 What follows is a (hopefully) comprehensive description of each instruction that is currently avaliable in this virtual machine.
+
 **00 - End OF File |** This instruction is used to tell the program that the file is ended before it does or for cleanliness of code. 
 
 **01 - End Of Instruction |** This code is used to end every instruction.
@@ -126,3 +127,4 @@ What follows is a (hopefully) comprehensive description of each instruction that
 **59 - ARLEN(0) |** Length of an array from bottom.
 
 **60 - ARSET_TOP |** Set an array from top index.
+Hey, btw, assebly for these instructions will be created as soon as I am satisfied with instruction themselves.
