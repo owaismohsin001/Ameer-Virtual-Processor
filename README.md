@@ -6,64 +6,123 @@ It can be ran on any python environment but for the sake of let's say performanc
 This VM is intended to be used for dynamic languages and so it's made dynamic in it's very nature. This currently supports variables in a heap and a string heap, arrays and strings. We hope to add built in functions in this very soon and to expand on our support of arrays and strings.
 ## Instruction Chart
 What follows is a (hopefully) comprehensive description of each instruction that is currently avaliable in this virtual machine.
-00 - End OF File | This instruction is used to tell the program that the file is ended before it does or for cleanliness of code.       
+00 - End OF File | This instruction is used to tell the program that the file is ended before it does or for cleanliness of code. 
+
 01 - End Of Instruction | This code is used to end every instruction.
+
 02 - push | PUSH to the top of the stack.
+
 03 - pop  | Pop either top or a certain index from the stack.
+
 04 - print | Used to print the top of the sack.
+
 05 - add | Add two numbers at the top of the stack.
+
 06 - substract | Substract two numbers at the top of the stack.
+
 07 - multipy | Multiply two numbers at the top of the stack.
+
 08 - divide | Divide two numbers at the top of the stack
+
 09 - shuffle | Shuffle two elements from the stack, takes an argument as to what stack number should the first stack be shuffled with.
+
 10 - GOTO | Unconditional GOTO and it pops the line number of the stack.
+
 11 - IFEQUAL | Add either True or False on the stack depending on if first and second values on the stack are equal and pops conditions.
+
 12 - modulus
-13 - INCrement                          
-14 - DECrement                          
-15 - Exponent                           
-16 - Store                              
-17 - Retrive                            
-18 - DELete                             
+
+13 - INCrement         
+
+14 - DECrement         
+
+15 - Exponent            
+
+16 - Store                
+
+17 - Retrive
+
+18 - DELete
+
 19 - IFGREAT | Adds either True or False on the stack depending on if first is greater than the and second value on the stack and pops conditions.
+
 20 - IFNULL | Adds either True or False on the stack depending on if the first value on the stack is null and pops conditions.
+
 21 - IFPLUS | Adds either True or False on the stack depending on if the first value on the stack is positive and pops conditions.
+
 22 - IFMINUS | Adds either True or False on the stack depending on if the first value on the stack is negative and pops conditions.
+
 23 - IFUNEQUAL | Adds either True or False on the stack depending on if first is unequal to the second value on the stack and pops conditions.
-24 - IFEQUAL | Adds either True or False on the stack depending on if first is equal to the second value on the stack and pops conditions.    
+24 - IFEQUAL | Adds either True or False on the stack depending on if first is equal to the second value on the stack and pops conditions. 
+
 25 - IFSMALL | Adds either True or False on the stack depending on if first is unequal to the second value on the stack and pops conditions.
+
 26 - GOTO_L | GOTO without popping line number from stack.
+
 27 - IFGREAT(0) | Adds either True or False on the stack depending on if first is greater than the and second value on the stack.
+
 28 - IFNULL(0) | Adds either True or False on the stack depending on if the first value on the stack is null.
+
 29 - IFPLUS(0) | Adds either True or False on the stack depending on if the first value on the stack is positive.
+
 30 - IFMINUS(0) | Adds either True or False on the stack depending on if the first value on the stack is negative.
-31 - IFUNEQUAL(0) | Adds either True or False on the stack depending on if first is unequal to the second value on the stack.           
+
+31 - IFUNEQUAL(0) | Adds either True or False on the stack depending on if first is unequal to the second value on the stack.   
+
 32 - IFEQUAL(0) | Adds either True or False on the stack depending on if first is equal to the second value on the stack.
+
 33 - IFSMALL(0) | Adds either True or False on the stack depending on if first is unequal to the second value on the stack.
+
 34 - SADD | Concatenates first two elements of the stack and appends them.
-35 - SCONV | Converts the first element of the stack to a string.                         
-36 - POP_TOP | Pops the first elememnts from the stack depending on the indx you provide.              
+
+35 - SCONV | Converts the first element of the stack to a string.  
+
+36 - POP_TOP | Pops the first elememnts from the stack depending on the indx you provide.    
+
 37 - GOTO_CONDITIONALLY | Conditionally GOTO a line number depending on the first value on the stack and if it's True or False.
+
 38 - GOTO_CONDITIONALLY_L | Conditionally GOTO a line number depending on the first value on the stack and if it's True or False and don't pop conditions off the stack.
+
 39 - LITERAL_PRINT | Print stuff with literals. 
+
 40 - NOT | Inverts the first condition on the stack.
+
 41 - OR | OR operation on the first condition on the stack. 
+
 42 - AND | AND operation on the first condition on the stack.
+
 43 - REGISTER | Adds first element of the stack to this register with a string name.
+
 44 - UNREGISTER | Removes the given element from the register.
+
 45 - GETREGISTER | Add the given element from the register to the top of the stack.
-46 - FLOATCONV | Converts the first element of the stack to a float.                       
-47 - INTCONV | Converts the first element of the stack to a integer.                           
+
+46 - FLOATCONV | Converts the first element of the stack to a float. 
+
+47 - INTCONV | Converts the first element of the stack to a integer.  
+
 48 - DUPLICATE | Duplicate the first value of the stack.
+
 49 - ARCREATE | Creates an array with the array length on the top of the stack and append it onto the stack.
+
 50 - ARCREATE(1) | Creates an array with the array length on the top of the stack and append it onto the stack and removes those from the stack.
+
 51 - MEMDUMP | Print entire stack.
+
 52 - ARDISASSEMBLE | Disassemble the array on the top of the stack.      
+
 53 - ARGET | Get list's place from the top of the stack and them gets the reference from the stack. Either from the top or bottom depending on it's mode.
-54 - ARSET | Sets an array the same way it get's it.     
+
+54 - ARSET | Sets an array the same way it get's it. 
+
 55 - ARLEN | Get the length of the array from the given index.
+
 56 - ARAPPEND(0) | Appends the memory on a certain index from top.
+
 57 - ARAPPEND(1) | Appends the memory on a certain index from bottom.   
+
 58 - ARPOP | Pops array on a certain list's place.
+
 59 - ARLEN(0) | Length of an array from bottom.
+
 60 - ARSET_TOP | Set an array from top index.
