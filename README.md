@@ -129,4 +129,8 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **60 - ARSET_TOP |** Set an array from top index.
 
+**61 - ARINSERT_TOP |** Insert into an array from top index.
+
+**62 - ARINSERT |** Insert into an array from bottom index.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
