@@ -63,6 +63,8 @@ from codecs import decode
 #    58 - ARPOP                              #
 #    59 - ARLEN(0)                           #
 #    60 - ARSET_TOP                          #
+#    61 - ARINSERT_TOP                       #
+#    62 - ARINSERT                           #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -226,6 +228,10 @@ class main(object):
                 self.ARLEN(call=0)
             elif instruction[pointer] == '60':
                 self.ARSET_TOP(instruction[pointer+1])
+            elif instruction[pointer] == '61':
+                self.ARINSERT_TOP(instruction[pointer+1])
+            elif instruction[pointer] == '62':
+                self.ARINSERT(instruction[pointer+1])
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -270,6 +276,20 @@ class main(object):
         value = self.memory[len(self.memory)-1]
         reference = self.memory.pop(len(self.memory)-2) if mode else self.memory[len(self.memory)-2]
         self.memory[list_place][reference] = value
+
+    def ARINSERT(self, mode="0x0"):
+        mode = int(mode, 16)
+        list_place = self.memory.pop()
+        value = self.memory[len(self.memory)-1]
+        reference = self.memory.pop(len(self.memory)-2) if mode else self.memory[len(self.memory)-2]
+        self.memory[list_place].insert(reference, value)
+
+    def ARINSERT_TOP(self, mode="0x0"):
+        mode = int(mode, 16)
+        list_place = self.memory.pop()
+        value = self.memory[len(self.memory)-1]
+        reference = self.memory.pop(len(self.memory)-2) if mode else self.memory[len(self.memory)-2]
+        self.memory[len(self.memory)-list_place].insert(reference, value)
 
     def ARSET_TOP(self, mode="0x0"):
         mode = int(mode, 16)
@@ -473,4 +493,6 @@ class main(object):
         return main, None
 
 if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        raise Exception("No file path provided.")    
     main(sys.argv)
