@@ -133,4 +133,10 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **62 - ARINSERT |** Insert into an array from bottom index.
 
+**63 - INPUT |** With this insruction you can input anything in a string form.
+
+**64 - PUSH_NONE |** With this insruction you can push none on to the stack.
+
+**65 - SHUFFLE(1) |** Shuffles the first item in the stack with another one given in the instruction itself, counted from bottom.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
