@@ -65,6 +65,9 @@ from codecs import decode
 #    60 - ARSET_TOP                          #
 #    61 - ARINSERT_TOP                       #
 #    62 - ARINSERT                           #
+#    63 - INPUT                              #
+#    64 - PUSH_NONE                          #
+#    65 - SHUFFLE(1)                         #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -232,6 +235,12 @@ class main(object):
                 self.ARINSERT_TOP(instruction[pointer+1])
             elif instruction[pointer] == '62':
                 self.ARINSERT(instruction[pointer+1])
+            elif instruction[pointer] == '63':
+                self.INPUT()
+            elif instruction[pointer] == '64':
+                self.PUSH_NONE()
+            elif instruction[pointer] == '65':
+                self.SHUFFLE(instruction[pointer+1], call=1)
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -248,6 +257,16 @@ class main(object):
             self.memory.append(self.get_string(value))
         else:
             self.memory.append(int(value, 16))
+
+    def PUSH_NONE(self):
+        self.memory.append(None)
+
+    def INPUT(self):
+        displayed = self.memory[len(self.memory)-1]
+        if displayed is None:
+            displayed = ""
+        given = input(str(displayed))
+        self.memory.append(given)
 
     def DUPLICATE(self):
         mem = self.memory[len(self.memory)-1]
@@ -415,10 +434,13 @@ class main(object):
         results = self.memory[len(self.memory)-1] ** self.memory[len(self.memory)-2]
         self.memory.append(results)
 
-    def SHUFFLE(self, index):
-        given = self.memory[len(self.memory) - int(index, 16)]
+    def SHUFFLE(self, index, call=0):
+        given = self.memory[int(index, 16)] if call else self.memory[len(self.memory) - int(index, 16)]
         stack_top = self.memory[len(self.memory)-1]
-        self.memory[len(self.memory) - int(index, 16)] = stack_top
+        if call:
+            self.memory[int(index, 16)] = stack_top
+        else:
+            self.memory[len(self.memory) - int(index, 16)] = stack_top
         self.memory[len(self.memory)-1] = given
 
     def INC(self):
