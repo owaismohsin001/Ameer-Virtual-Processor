@@ -123,7 +123,7 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **57 - ARAPPEND(1) |** Appends the memory on a certain index from bottom.   
 
-**58 - ARPOP |** Pops array on a certain list's place.
+**58 - ARPOP(1) |** Pops array on a certain list's place counted from bottom.
 
 **59 - ARLEN(0) |** Length of an array from bottom.
 
@@ -138,5 +138,11 @@ What follows is a (hopefully) comprehensive description of each instruction that
 **64 - PUSH_NONE |** With this insruction you can push none on to the stack.
 
 **65 - SHUFFLE(1) |** Shuffles the first item in the stack with another one given in the instruction itself, counted from bottom.
+
+**66 - ARPOP(0) |** Pops array on a certain list's place counted from top.
+
+**67 - ARPOP_TOP(1) |** Pops array's top index on a certain list's place counted from top.
+
+**68 - ARPOP_TOP(0) |** Pops array's top index on a certain list's place counted from bottom.
 
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
