@@ -60,7 +60,7 @@ from codecs import decode
 #    55 - ARLEN                              #
 #    56 - ARAPPEND(0)                        #
 #    57 - ARAPPEND(1)                        #
-#    58 - ARPOP                              #
+#    58 - ARPOP(0)                           #
 #    59 - ARLEN(0)                           #
 #    60 - ARSET_TOP                          #
 #    61 - ARINSERT_TOP                       #
@@ -68,6 +68,9 @@ from codecs import decode
 #    63 - INPUT                              #
 #    64 - PUSH_NONE                          #
 #    65 - SHUFFLE(1)                         #
+#    66 - ARPOP(0)                           #
+#    67 - ARPOP_TOP(1)                       #
+#    68 - ARPOP_TOP(0)                       #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -241,6 +244,12 @@ class main(object):
                 self.PUSH_NONE()
             elif instruction[pointer] == '65':
                 self.SHUFFLE(instruction[pointer+1], call=1)
+            elif instruction[pointer] == '66':
+                self.ARPOP(pos=0)
+            elif instruction[pointer] == '67':
+                self.ARPOP_TOP(pos=1)
+            elif instruction[pointer] == '68':
+                self.ARPOP_TOP(pos=0)
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -335,6 +344,11 @@ class main(object):
         list_place = self.memory.pop()
         list_place = self.memory[list_place] if pos else self.memory[len(self.memory) - list_place]
         list_place.pop(self.memory[len(self.memory)-1])
+
+    def ARPOP_TOP(self, pos=0):
+        list_place = self.memory.pop()
+        list_place = self.memory[list_place] if pos else self.memory[len(self.memory) - list_place]
+        list_place.pop()
 
     def ARDISASSEMBLE(self, mode=0):
         array_len = self.memory.pop()
