@@ -66,11 +66,13 @@ from codecs import decode
 #    61 - ARINSERT_TOP                       #
 #    62 - ARINSERT                           #
 #    63 - INPUT                              #
-#    64 - PUSH_NONE                          #
+#    64 - PUSH_NULL                          #
 #    65 - SHUFFLE(1)                         #
 #    66 - ARPOP(0)                           #
 #    67 - ARPOP_TOP(1)                       #
 #    68 - ARPOP_TOP(0)                       #
+#    69 - PUSH_TRUE                          #
+#    70 - PUSH_FALSE                         #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -241,7 +243,7 @@ class main(object):
             elif instruction[pointer] == '63':
                 self.INPUT()
             elif instruction[pointer] == '64':
-                self.PUSH_NONE()
+                self.PUSH_NULL()
             elif instruction[pointer] == '65':
                 self.SHUFFLE(instruction[pointer+1], call=1)
             elif instruction[pointer] == '66':
@@ -250,6 +252,10 @@ class main(object):
                 self.ARPOP_TOP(pos=1)
             elif instruction[pointer] == '68':
                 self.ARPOP_TOP(pos=0)
+            elif instruction[pointer] == '69':
+                self.PUSH_TRUE()
+            elif instruction[pointer] == '70':
+                self.PUSH_FALSE()
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -267,8 +273,14 @@ class main(object):
         else:
             self.memory.append(int(value, 16))
 
-    def PUSH_NONE(self):
+    def PUSH_NULL(self):
         self.memory.append(None)
+
+    def PUSH_TRUE(self):
+        self.memory.append(True)
+
+    def PUSH_FALSE(self):
+        self.memory.append(False)
 
     def INPUT(self):
         displayed = self.memory[len(self.memory)-1]
@@ -480,7 +492,7 @@ class main(object):
 
     def IFNULL(self, call=1):
         mayNull = self.memory.pop() if call else self.memory[len(self.memory)-1]
-        self.memory.append(mayNull == 0)
+        self.memory.append(bool(mayNull))
 
     def IFPLUS(self, call=1):
         value = self.memory.pop() if call else self.memory[len(self.memory)-1]
