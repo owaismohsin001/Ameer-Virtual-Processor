@@ -145,4 +145,8 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **68 - ARPOP_TOP(0) |** Pops array's top index on a certain list's place counted from bottom.
 
+**69 - PUSH_TRUE |** Pushes a true value onto the stack.
+
+**70 - PUSH_FALSE |** Pushes a false value onto the stack.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
