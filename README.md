@@ -149,6 +149,6 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **70 - PUSH_FALSE |** Pushes a false value onto the stack.
 
-**70 - XOR |** XOR gate that checks for first two value of the stack and pops them of it.
+**71 - XOR |** XOR gate that checks for first two value of the stack and pops them of it.
 
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
