@@ -73,6 +73,7 @@ from codecs import decode
 #    68 - ARPOP_TOP(0)                       #
 #    69 - PUSH_TRUE                          #
 #    70 - PUSH_FALSE                         #
+#    71 - XOR                                #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -256,6 +257,8 @@ class main(object):
                 self.PUSH_TRUE()
             elif instruction[pointer] == '70':
                 self.PUSH_FALSE()
+            elif instruction[pointer] == '71':
+                self.XOR()
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -514,6 +517,11 @@ class main(object):
         a = self.memory.pop()
         b = self.memory.pop()
         self.memory.append(a or b)
+
+    def XOR(self):
+        a = self.memory.pop()
+        b = self.memory.pop()
+        self.memory.append(((a and not b) or (not a and b)))
 
     def AND(self):
         a = self.memory.pop()
