@@ -1,5 +1,5 @@
 # Ameer Virtual Processor
-This is virtual machine named Ameer Virtual Processor to which languages can be to, and be ran.
+This is virtual machine named Ameer Virtual Processor to which languages can be compiled to, and be ran on.
 ## Environment
 It can be ran on any python environment but for the sake of let's say performance, it should be ran with either an AOT Compiler like Nuitka or a JIT Compiler like PyPy which this virtual machine can be compiled to.
 ## Supported type of instructions
