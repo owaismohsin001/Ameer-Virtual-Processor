@@ -74,6 +74,7 @@ from codecs import decode
 #    69 - PUSH_TRUE                          #
 #    70 - PUSH_FALSE                         #
 #    71 - XOR                                #
+#    72 - ASSERT                             #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -259,6 +260,8 @@ class main(object):
                 self.PUSH_FALSE()
             elif instruction[pointer] == '71':
                 self.XOR()
+            elif instruction[pointer] == '72':
+                self.ASSERT()
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -478,6 +481,10 @@ class main(object):
     def DEC(self):
         self.memory[len(self.memory)-1] = self.memory[len(self.memory)-1] - 1
 
+    def ASSERT(self):
+        assertion = self.memory.pop()
+        assert assertion
+
     def IFEQUAL(self, call=1):
         first = self.memory.pop() if call else self.memory[len(self.memory)-1]
         second = self.memory.pop() if call else self.memory[len(self.memory)-2]
@@ -550,5 +557,5 @@ class main(object):
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        raise Exception("No file path provided.")    
+        raise Exception("No file path provided.")
     main(sys.argv)
