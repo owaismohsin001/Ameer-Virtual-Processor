@@ -151,4 +151,6 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **71 - XOR |** XOR gate that checks for first two value of the stack and pops them of it.
 
+**72 - ASSERT |** Assert statement that raises assertion error if condition on the top of the stack isn't true and proceeds if it is.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
