@@ -153,4 +153,10 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **72 - ASSERT |** Assert statement that raises assertion error if condition on the top of the stack isn't true and proceeds if it is.
 
+**73 - NEGATE |** Negates the first value on the top of the stack.
+
+**74 - IFSAME |** Checks if two value on the top of the stack are the same value and pops them off the stack.
+
+**75 - IFSAME(0) |** Checks if two value on the top of the stack are the same value and doesn't pops them off the stack.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
