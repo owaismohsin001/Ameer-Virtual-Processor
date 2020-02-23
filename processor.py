@@ -1,5 +1,6 @@
 import sys
 from codecs import decode
+from traceback import print_tb, format_exception
 """
 #############___Implemented___################
 #    00 - End OF File                        #
@@ -75,6 +76,9 @@ from codecs import decode
 #    70 - PUSH_FALSE                         #
 #    71 - XOR                                #
 #    72 - ASSERT                             #
+#    73 - NEGATE                             #
+#    74 - IFSAME                             #
+#    75 - IFSAME(0)                          #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -93,7 +97,11 @@ class main(object):
         self.line_no = 0
         while(self.line_no<len(bcode)):
             instruction = self.load_instruction(bcode[self.line_no])
-            self.execute_instruction(instruction)
+            try:
+                self.execute_instruction(instruction)
+            except Exception as error:
+                print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)))
+                sys.exit(65)
             self.line_no+=1
 
     def load_program(self, file):
@@ -262,6 +270,12 @@ class main(object):
                 self.XOR()
             elif instruction[pointer] == '72':
                 self.ASSERT()
+            elif instruction[pointer] == '73':
+                self.NEGATE()
+            elif instruction[pointer] == '74':
+                self.IFSAME()
+            elif instruction[pointer] == '75':
+                self.IFSAME(call=0)
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -455,6 +469,9 @@ class main(object):
             raise ZeroDivisionError("You are dividing by zero on instruction number " + str(self.line_no))
         self.memory.append(results)
 
+    def NEGATE(self):
+        self.memory[len(self.memory)-1] = self.memory[len(self.memory)-2] * -1
+
     def MODULUS(self):
         try:
             results = self.memory[len(self.memory)-1] % self.memory[len(self.memory)-2]
@@ -489,6 +506,11 @@ class main(object):
         first = self.memory.pop() if call else self.memory[len(self.memory)-1]
         second = self.memory.pop() if call else self.memory[len(self.memory)-2]
         self.memory.append(first == second)
+
+    def IFSAME(self, call=1):
+        first = self.memory.pop() if call else self.memory[len(self.memory)-1]
+        second = self.memory.pop() if call else self.memory[len(self.memory)-2]
+        self.memory.append(first is second)
 
     def IFGREAT(self, call=1):
         first = self.memory.pop() if call else self.memory[len(self.memory)-1]
