@@ -470,7 +470,7 @@ class main(object):
         self.memory.append(results)
 
     def NEGATE(self):
-        self.memory[len(self.memory)-1] = self.memory[len(self.memory)-2] * -1
+        self.memory[len(self.memory)-1] = self.memory[len(self.memory)-1] * -1
 
     def MODULUS(self):
         try:
