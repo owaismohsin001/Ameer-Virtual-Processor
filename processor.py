@@ -79,6 +79,8 @@ from traceback import print_tb, format_exception
 #    73 - NEGATE                             #
 #    74 - IFSAME                             #
 #    75 - IFSAME(0)                          #
+#    76 - Split                              #
+#    77 - JOIN                               #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -100,7 +102,7 @@ class main(object):
             try:
                 self.execute_instruction(instruction)
             except Exception as error:
-                print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)))
+                print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)), f"\nOccured at instruction number {self.line_no}")
                 sys.exit(65)
             self.line_no+=1
 
@@ -276,6 +278,10 @@ class main(object):
                 self.IFSAME()
             elif instruction[pointer] == '75':
                 self.IFSAME(call=0)
+            elif instruction[pointer] == '76':
+                self.SPLIT()
+            elif instruction[pointer] == '77':
+                self.JOIN()
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -453,6 +459,14 @@ class main(object):
         self.memory[len(self.memory)-2] = str(self.memory[len(self.memory)-2])
         results = self.memory[len(self.memory)-1] + self.memory[len(self.memory)-2]
         self.memory.append(results)
+
+    def SPLIT(self):
+        splitter = self.memory.pop()
+        self.memory[len(self.memory)-1] = self.memory[len(self.memory)-1].split(splitter)
+
+    def JOIN(self):
+        joiner = self.memory.pop()
+        self.memory[len(self.memory)-1] = joiner.join(self.memory[len(self.memory)-1])
 
     def SUB(self):
         results = self.memory[len(self.memory)-1] - self.memory[len(self.memory)-2]
