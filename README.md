@@ -177,6 +177,6 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **84 - HEAPDUMP |** Prints entire frame in which heaps is recorded.
 
-**85 - PUSH_LAST |** Pushes the last heap frame onto the memory.
+**85 - PUSH_LAST |** Pushes the last heap frame's onto the memory.
 
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
