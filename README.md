@@ -159,4 +159,24 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **75 - IFSAME(0) |** Checks if two value on the top of the stack are the same value and doesn't pops them off the stack.
 
+**76 - Split |** Splits a string into an array by a seprator and pops it off the stack.
+
+**77 - Join |** Joins an array from a string by a seprator and pops it off the stack.
+
+**78 - StrINSERT |** Inserts into a string, specifically substitutes curly braces.
+
+**79 - RECORD |** Records current memory seprately.
+
+**80 - RECAP |** Sets currently recorded memory to current memory.
+
+**81 - FRAMDUMP |** Prints entire frame in which memories is recorded.
+
+**82 - RECORDHEAP |** Records current heap seprately, and choses it by an argument in which 0 means storage and 1 means register.
+
+**83 - RECAPHEAP |** Sets currently recorded heap to the current heap, and choses it by an argument in which 0 means storage and 1 means register.
+
+**84 - HEAPDUMP |** Prints entire frame in which heaps is recorded.
+
+**85 - PUSH_LAST |** Pushes the last heap frame onto the memory.
+
 Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
