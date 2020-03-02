@@ -61,7 +61,7 @@ from traceback import print_tb, format_exception
 #    55 - ARLEN                              #
 #    56 - ARAPPEND(0)                        #
 #    57 - ARAPPEND(1)                        #
-#    58 - ARPOP(0)                           #
+#    58 - ARPOP(1)                           #
 #    59 - ARLEN(0)                           #
 #    60 - ARSET_TOP                          #
 #    61 - ARINSERT_TOP                       #
@@ -81,17 +81,55 @@ from traceback import print_tb, format_exception
 #    75 - IFSAME(0)                          #
 #    76 - Split                              #
 #    77 - JOIN                               #
+#    78 - StrINSERT                          #
+#    79 - RECORD                             #
+#    80 - RECAP                              #
+#    81 - FRAMEDUMP                          #
+#    82 - RECORDHEAP                         #
+#    83 - RECAPHEAP                          #
+#    84 - HEAPDUMP                           #
+#    85 - PUSH_LAST                          #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
 #                                            #
 ##############################################
 """
+class Frame(object):
+    def __init__(self):
+        self.Frame = {}
+        self.callStack = []
+        self.last_frame = self.callStack[-1] if self.callStack != [] else ''
+
+    def __setitem__(self, key, value):
+        self.last_frame = self.callStack[-1] if self.callStack != [] else ''
+        self.callStack.append(key)
+        self.Frame[key] = value
+
+    def last(self):
+        return self.last_frame
+
+    def __remove_callStack(self):
+        if self.callStack == []:
+            pass
+        else:
+            self.callStack.pop()
+
+    def __getitem__(self, key):
+        self.__remove_callStack()
+        return self.Frame[key]
+
+    def __delitem__(self, key):
+        self.__remove_callStack()
+        del self.Frame[key]
+
 class main(object):
     def __init__(self, argv):
         self.memory = []
         self.storage = {}
         self.register = {}
+        self.memory_frame = Frame()
+        self.heap_frame = Frame()
         self.main(argv)
 
     def main(self, argv):
@@ -282,6 +320,22 @@ class main(object):
                 self.SPLIT()
             elif instruction[pointer] == '77':
                 self.JOIN()
+            elif instruction[pointer] == '78':
+                self.StrINSERT()
+            elif instruction[pointer] == '79':
+                self.RECORD()
+            elif instruction[pointer] == '80':
+                self.RECAP()
+            elif instruction[pointer] == '81':
+                self.FRAMEDUMP()
+            elif instruction[pointer] == '82':
+                self.RECORDHEAP(instruction[pointer+1])
+            elif instruction[pointer] == '83':
+                self.RECAPHEAP(instruction[pointer+1])
+            elif instruction[pointer] == '84':
+                self.DUMPHEAP()
+            elif instruction[pointer] == '85':
+                self.PUSH_LAST(pointer+1)
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -393,6 +447,42 @@ class main(object):
         for val in array_len:
             self.memory.append(val)
 
+    def PUSH_LAST(self, mode=0):
+        last = self.memory_frame.last() if mode else self.heap_frame.last()
+        self.memory.append(last)
+
+    def RECORD(self):
+        key = self.memory.pop()
+        self.memory_frame[key] = self.memory
+        self.memory = []
+
+    def RECORDHEAP(self, call=0):
+        key = self.memory.pop()
+        self.heap_frame[key] = self.register if call else self.storage
+        if call:
+            self.register = {}
+        else:
+            self.storage = {}
+
+    def RECAP(self):
+        key = self.memory.pop()
+        self.memory = self.memory_frame[key]
+        del self.memory_frame[key]
+
+    def RECAPHEAP(self, call=0):
+        key = self.memory.pop()
+        if call:
+            self.register = self.heap_frame[key]
+        else:
+            self.storage = self.heap_frame[key]
+        del self.heap_frame[key]
+
+    def FRAMEDUMP(self):
+        print(self.memory_frame.Frame)
+
+    def DUMPHEAP(self):
+        print(self.heap_frame.Frame)
+
     def STORE(self, key):
         value = self.memory[len(self.memory)-1]
         self.memory.pop()
@@ -467,6 +557,10 @@ class main(object):
     def JOIN(self):
         joiner = self.memory.pop()
         self.memory[len(self.memory)-1] = joiner.join(self.memory[len(self.memory)-1])
+
+    def StrINSERT(self):
+        insertion = self.memory.pop()
+        self.memory[len(self.memory)-1] = self.memory[len(self.memory)-1].format(insertion)
 
     def SUB(self):
         results = self.memory[len(self.memory)-1] - self.memory[len(self.memory)-2]
@@ -573,8 +667,8 @@ class main(object):
 
     def GOTO(self, condition=0):
         line_no = self.memory.pop()
-        found_condition = self.memory.pop()
-        if (condition == 1) and found_condition:  
+        found_condition = self.memory.pop() if condition else True
+        if (condition == 1) and found_condition:
             self.line_no = line_no - 1
         elif condition == 0:
             self.line_no = line_no - 1
