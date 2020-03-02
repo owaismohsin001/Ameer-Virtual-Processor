@@ -335,7 +335,7 @@ class main(object):
             elif instruction[pointer] == '84':
                 self.DUMPHEAP()
             elif instruction[pointer] == '85':
-                self.PUSH_LAST(pointer+1)
+                self.PUSH_LAST(instruction[pointer+1])
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
