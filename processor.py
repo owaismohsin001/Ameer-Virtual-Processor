@@ -89,6 +89,9 @@ from traceback import print_tb, format_exception
 #    83 - RECAPHEAP                          #
 #    84 - HEAPDUMP                           #
 #    85 - PUSH_LAST                          #
+#    86 - SETUP_EXCEPT                       #
+#    87 - END_EXCEPT                         #
+#    88 - IFEXCEPTION                        #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -99,21 +102,23 @@ class Frame(object):
     def __init__(self):
         self.Frame = {}
         self.callStack = []
-        self.last_frame = self.callStack[-1] if self.callStack != [] else ''
+        self.last_frame =  ''
 
     def __setitem__(self, key, value):
-        self.last_frame = self.callStack[-1] if self.callStack != [] else ''
+        self.__set_last_frame()
         self.callStack.append(key)
         self.Frame[key] = value
 
     def last(self):
         return self.last_frame
 
+    def __set_last_frame(self):
+        self.last_frame =  '' if self.callStack == [] else self.callStack[-1]
+
     def __remove_callStack(self):
-        if self.callStack == []:
-            pass
-        else:
+        if self.callStack != []:
             self.callStack.pop()
+            self.__set_last_frame()
 
     def __getitem__(self, key):
         self.__remove_callStack()
@@ -130,6 +135,8 @@ class main(object):
         self.register = {}
         self.memory_frame = Frame()
         self.heap_frame = Frame()
+        self.exception_handler = False
+        self.exceptions = []
         self.main(argv)
 
     def main(self, argv):
@@ -140,8 +147,12 @@ class main(object):
             try:
                 self.execute_instruction(instruction)
             except Exception as error:
-                print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)), f"\nOccured at instruction number {self.line_no}")
-                sys.exit(65)
+                if self.exception_handler:
+                    self.exceptions.append(error)
+                    self.exception_handler = False
+                else:
+                    print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)), f"\nOccured at instruction number {self.line_no}")
+                    sys.exit(65)
             self.line_no+=1
 
     def load_program(self, file):
@@ -336,6 +347,12 @@ class main(object):
                 self.DUMPHEAP()
             elif instruction[pointer] == '85':
                 self.PUSH_LAST(instruction[pointer+1])
+            elif instruction[pointer] == '86':
+                self.SETUP_EXCEPT()
+            elif instruction[pointer] == '87':
+                self.END_EXCEPT()
+            elif instruction[pointer] == '88':
+                self.IFEXCEPTION(instruction[pointer+1])
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -352,6 +369,12 @@ class main(object):
             self.memory.append(self.get_string(value))
         else:
             self.memory.append(int(value, 16))
+
+    def SETUP_EXCEPT(self):
+        self.exception_handler = True
+
+    def END_EXCEPT(self):
+        self.exception_handler = False
 
     def PUSH_NULL(self):
         self.memory.append(None)
@@ -448,7 +471,7 @@ class main(object):
             self.memory.append(val)
 
     def PUSH_LAST(self, mode=0):
-        last = self.memory_frame.last() if mode else self.heap_frame.last()
+        last = self.heap_frame.last() if mode else self.memory_frame.last()
         self.memory.append(last)
 
     def RECORD(self):
@@ -646,6 +669,11 @@ class main(object):
         first = self.memory.pop() if call else self.memory[len(self.memory)-1]
         second = self.memory.pop() if call else self.memory[len(self.memory)-2]
         self.memory.append(first != second)
+
+    def IFEXCEPTION(self, given_type):
+        exception = self.exceptions.pop() if self.exceptions != [] else self.exceptions
+        given_type = self.get_string(given_type)
+        self.memory.append(type(exception).__name__ == given_type)
 
     def NOT(self):
         self.memory[len(self.memory)-1] = not(self.memory[len(self.memory)-1])
