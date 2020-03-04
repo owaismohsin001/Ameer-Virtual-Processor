@@ -137,6 +137,95 @@ class main(object):
         self.heap_frame = Frame()
         self.exception_handler = False
         self.exceptions = []
+        self.opcodes = {
+            "02": lambda x: self.PUSH(*x),
+            "03": lambda x: self.POP(*x),
+            "04": lambda x: self.PRINT(),
+            "05": lambda x: self.ADD(),
+            "06": lambda x: self.SUB(),
+            "07": lambda x: self.MUL(),
+            "08": lambda x: self.DIV(),
+            "09": lambda x: self.SHUFFLE(),
+            "10": lambda x: self.GOTO(),
+            "11": lambda x: self.IFEQUAL(),
+            "12": lambda x: self.MODULUS(),
+            "13": lambda x: self.INC(),
+            "14": lambda x: self.DEC(),
+            "15": lambda x: self.EXPO(),
+            "16": lambda x: self.STORE(),
+            "17": lambda x: self.RETRIVE(),
+            "18": lambda x: self.DEL(),
+            "19": lambda x: self.IFGREAT(),
+            "20": lambda x: self.IFNULL(),
+            "21": lambda x: self.IFPLUS(),
+            "22": lambda x: self.IFMINUS(),
+            "23": lambda x: self.IFUNEQUAL(),
+            "24": lambda x: self.IFEQUAL(),
+            "25": lambda x: self.IFSMALL(),
+            "26": lambda x: self.GOTO_L(),
+            "27": lambda x: self.IFGREAT(0),
+            "28": lambda x: self.IFNULL(0),
+            "29": lambda x: self.IFPLUS(0),
+            "30": lambda x: self.IFMINUS(0),
+            "31": lambda x: self.IFUNEQUAL(0),
+            "32": lambda x: self.IFEQUAL(0),
+            "33": lambda x: self.IFSMALL(0),
+            "34": lambda x: self.SADD(),
+            "35": lambda x: self.SCONV(),
+            "36": lambda x: self.POP_TOP(*x),
+            "37": lambda x: self.GOTO(condition=1),
+            "38": lambda x: self.GOTO_L(condition=1),
+            "39": lambda x: self.LITERAL_PRINT(),
+            "40": lambda x: self.NOT(),
+            "41": lambda x: self.OR(),
+            "42": lambda x: self.AND(),
+            "43": lambda x: self.REGISTER(*x),
+            "44": lambda x: self.UNREGISTER(*x),
+            "45": lambda x: self.GETREGISTER(*x),
+            "46": lambda x: self.FLOATCONV(),
+            "47": lambda x: self.INTCONV(),
+            "48": lambda x: self.DUPLICATE(),
+            "49": lambda x: self.ARCREATE(),
+            "50": lambda x: self.ARCREATE(1),
+            "51": lambda x: self.MEMDUMP(),
+            "52": lambda x: self.ARDISASSEMBLE(),
+            "53": lambda x: self.ARGET(*x),
+            "54": lambda x: self.ARSET(*x),
+            "55": lambda x: self.ARLEN(),
+            "56": lambda x: self.ARAPPEND(0),
+            "57": lambda x: self.ARAPPEND(1),
+            "58": lambda x: self.ARPOP(1),
+            "59": lambda x: self.ARLEN(0),
+            "60": lambda x: self.ARSET_TOP(*x),
+            "61": lambda x: self.ARINSERT_TOP(*x),
+            "62": lambda x: self.ARINSERT(*x),
+            "63": lambda x: self.INPUT(),
+            "64": lambda x: self.PUSH_NULL(),
+            "65": lambda x: self.SHUFFLE(1),
+            "66": lambda x: self.ARPOP(0),
+            "67": lambda x: self.ARPOP_TOP(1),
+            "68": lambda x: self.ARPOP_TOP(0),
+            "69": lambda x: self.PUSH_TRUE(),
+            "70": lambda x: self.PUSH_FALSE(),
+            "71": lambda x: self.XOR(),
+            "72": lambda x: self.ASSERT(),
+            "73": lambda x: self.NEGATE(),
+            "74": lambda x: self.IFSAME(),
+            "75": lambda x: self.IFSAME(0),
+            "76": lambda x: self.Split(),
+            "77": lambda x: self.JOIN(),
+            "78": lambda x: self.StrINSERT(),
+            "79": lambda x: self.RECORD(*x),
+            "80": lambda x: self.RECAP(*x),
+            "81": lambda x: self.FRAMEDUMP,
+            "82": lambda x: self.RECORDHEAP(*x),
+            "83": lambda x: self.RECAPHEAP(*x),
+            "84": lambda x: self.HEAPDUMP(*x),
+            "85": lambda x: self.PUSH_LAST(*x),
+            "86": lambda x: self.SETUP_EXCEPT(),
+            "87": lambda x: self.END_EXCEPT(),
+            "88": lambda x: self.IFEXCEPTION(*x)
+        }
         self.main(argv)
 
     def main(self, argv):
@@ -144,15 +233,16 @@ class main(object):
         self.line_no = 0
         while(self.line_no<len(bcode)):
             instruction = self.load_instruction(bcode[self.line_no])
-            try:
-                self.execute_instruction(instruction)
-            except Exception as error:
-                if self.exception_handler:
-                    self.exceptions.append(error)
-                    self.exception_handler = False
-                else:
-                    print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)), f"\nOccured at instruction number {self.line_no}")
-                    sys.exit(65)
+            if instruction != [""]:
+                try:
+                    self.execute_instruction(instruction)
+                except Exception as error:
+                    if self.exception_handler:
+                        self.exceptions.append(error)
+                        self.exception_handler = False
+                    else:
+                        print(''.join(format_exception(etype=type(error), value=error, tb=error.__traceback__)), f"\nOccured at instruction number {self.line_no}")
+                        sys.exit(65)
             self.line_no+=1
 
     def load_program(self, file):
@@ -170,191 +260,27 @@ class main(object):
 
     def load_instruction(self, instruction):
         instruction = instruction.split(" ")
+        code = [i for i in instruction if i!='']
         return instruction
 
     def execute_instruction(self, instruction):
         pointer = 0
         while (pointer<len(instruction)):
-            if instruction[pointer] == '02':
-                self.PUSH(instruction[pointer+1])
+            if instruction[pointer].startswith("{0x") or instruction[pointer].startswith("0x"):
+                pointer+=1
+            elif instruction[pointer] == '00':
+                sys.exit(0)
             elif instruction[pointer] == '03':
                 try:
                     index_to_pop = instruction[pointer+1]
                 except:
                     index_to_pop = hex(len(self.memory)-1)
-                self.POP(index_to_pop)
-            elif instruction[pointer] == '04':
-                self.PRINT()
-            elif instruction[pointer] == '05':
-                self.ADD()
-            elif instruction[pointer] == '06':
-                self.SUB()
-            elif instruction[pointer] == '07':
-                self.MUL()
-            elif instruction[pointer] == '08':
-                self.DIV()
-            elif instruction[pointer] == '09':
-                self.SHUFFLE(instruction[pointer+1])
-            elif instruction[pointer] == '10':
-                self.GOTO()
-            elif instruction[pointer] == '11':
-                self.IFEQUAL()
-            elif instruction[pointer] == '12':
-                self.MODULUS()
-            elif instruction[pointer] == '13':
-                self.INC()
-            elif instruction[pointer] == '14':
-                self.DEC()
-            elif instruction[pointer] == '15':
-                self.EXPO()
-            elif instruction[pointer] == '16':
-                self.STORE(instruction[pointer+1])
-            elif instruction[pointer] == '17':
-                self.RETRIVE(instruction[pointer+1])
-            elif instruction[pointer] == '18':
-                self.DEL(instruction[pointer+1])
-            elif instruction[pointer] == '19':
-                self.IFGREAT()
-            elif instruction[pointer] == '20':
-                self.IFNULL()
-            elif instruction[pointer] == '21':
-                self.IFPLUS()
-            elif instruction[pointer] == '22':
-                self.IFMINUS()
-            elif instruction[pointer] == '23':
-                self.IFUNEQUAL()
-            elif instruction[pointer] == '24':
-                self.IFEQUAL()
-            elif instruction[pointer] == '25':
-                self.IFSMALL()
-            elif instruction[pointer] == '26':
-                self.GOTO_L()
-            elif instruction[pointer] == '27':
-                self.IFGREAT(call=0)
-            elif instruction[pointer] == '28':
-                self.IFNULL(call=0)
-            elif instruction[pointer] == '29':
-                self.IFPLUS(call=0)
-            elif instruction[pointer] == '30':
-                self.IFMINUS(call=0)
-            elif instruction[pointer] == '31':
-                self.IFUNEQUAL(call=0)
-            elif instruction[pointer] == '32':
-                self.IFEQUAL(call=0)
-            elif instruction[pointer] == '33':
-                self.IFSMALL(call=0)
-            elif instruction[pointer] == '34':
-                self.SADD()
-            elif instruction[pointer] == '35':
-                self.SCONV()
-            elif instruction[pointer] == '36':
-                self.POP_TOP(instruction[pointer+1])
-            elif instruction[pointer] == '37':
-                self.GOTO(condition=1)
-            elif instruction[pointer] == '38':
-                self.GOTO_L(condition=1)
-            elif instruction[pointer] == '39':
-                self.LITERAL_PRINT()
-            elif instruction[pointer] == '40':
-                self.NOT()
-            elif instruction[pointer] == '41':
-                self.OR()
-            elif instruction[pointer] == '42':
-                self.AND()
-            elif instruction[pointer] == '43':
-                self.REGISTER(instruction[pointer+1])
-            elif instruction[pointer] == '44':
-                self.UNREGISTER(instruction[pointer+1])
-            elif instruction[pointer] == '45':
-                self.GETREGISTER(instruction[pointer+1])
-            elif instruction[pointer] == '46':
-                self.FLOATCONV()
-            elif instruction[pointer] == '47':
-                self.INTCONV()
-            elif instruction[pointer] == '48':
-                self.DUPLICATE()
-            elif instruction[pointer] == '49':
-                self.ARCREATE()
-            elif instruction[pointer] == '50':
-                self.ARCREATE(mode=1)
-            elif instruction[pointer] == '51':
-                self.MEMDUMP()
-            elif instruction[pointer] == '52':
-                self.ARDISASSEMBLE()
-            elif instruction[pointer] == '53':
-                self.ARGET(instruction[pointer+1])
-            elif instruction[pointer] == '54':
-                self.ARSET(instruction[pointer+1])
-            elif instruction[pointer] == '55':
-                self.ARLEN()
-            elif instruction[pointer] == '56':
-                self.ARAPPEND(pos=0)
-            elif instruction[pointer] == '57':
-                self.ARAPPEND(pos=1)
-            elif instruction[pointer] == '58':
-                self.ARPOP(pos=1)
-            elif instruction[pointer] == '59':
-                self.ARLEN(call=0)
-            elif instruction[pointer] == '60':
-                self.ARSET_TOP(instruction[pointer+1])
-            elif instruction[pointer] == '61':
-                self.ARINSERT_TOP(instruction[pointer+1])
-            elif instruction[pointer] == '62':
-                self.ARINSERT(instruction[pointer+1])
-            elif instruction[pointer] == '63':
-                self.INPUT()
-            elif instruction[pointer] == '64':
-                self.PUSH_NULL()
-            elif instruction[pointer] == '65':
-                self.SHUFFLE(instruction[pointer+1], call=1)
-            elif instruction[pointer] == '66':
-                self.ARPOP(pos=0)
-            elif instruction[pointer] == '67':
-                self.ARPOP_TOP(pos=1)
-            elif instruction[pointer] == '68':
-                self.ARPOP_TOP(pos=0)
-            elif instruction[pointer] == '69':
-                self.PUSH_TRUE()
-            elif instruction[pointer] == '70':
-                self.PUSH_FALSE()
-            elif instruction[pointer] == '71':
-                self.XOR()
-            elif instruction[pointer] == '72':
-                self.ASSERT()
-            elif instruction[pointer] == '73':
-                self.NEGATE()
-            elif instruction[pointer] == '74':
-                self.IFSAME()
-            elif instruction[pointer] == '75':
-                self.IFSAME(call=0)
-            elif instruction[pointer] == '76':
-                self.SPLIT()
-            elif instruction[pointer] == '77':
-                self.JOIN()
-            elif instruction[pointer] == '78':
-                self.StrINSERT()
-            elif instruction[pointer] == '79':
-                self.RECORD()
-            elif instruction[pointer] == '80':
-                self.RECAP()
-            elif instruction[pointer] == '81':
-                self.FRAMEDUMP()
-            elif instruction[pointer] == '82':
-                self.RECORDHEAP(instruction[pointer+1])
-            elif instruction[pointer] == '83':
-                self.RECAPHEAP(instruction[pointer+1])
-            elif instruction[pointer] == '84':
-                self.DUMPHEAP()
-            elif instruction[pointer] == '85':
-                self.PUSH_LAST(instruction[pointer+1])
-            elif instruction[pointer] == '86':
-                self.SETUP_EXCEPT()
-            elif instruction[pointer] == '87':
-                self.END_EXCEPT()
-            elif instruction[pointer] == '88':
-                self.IFEXCEPTION(instruction[pointer+1])
-            elif instruction[pointer] == '00':
-                sys.exit(0)
+                    self.opcodes[instruction[pointer]]([index_to_pop])
+                    pointer += 1
+            elif len(instruction)-1 == pointer:
+                    self.opcodes[instruction[pointer]]([])
+            else:
+                self.opcodes[instruction[pointer]]([instruction[pointer+1]])
             pointer += 1
 
     def get_string(self, value):
