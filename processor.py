@@ -92,6 +92,7 @@ from traceback import print_tb, format_exception
 #    86 - SETUP_EXCEPT                       #
 #    87 - END_EXCEPT                         #
 #    88 - IFEXCEPTION                        #
+#    89 - LISTCONV                           #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -353,6 +354,8 @@ class main(object):
                 self.END_EXCEPT()
             elif instruction[pointer] == '88':
                 self.IFEXCEPTION(instruction[pointer+1])
+            elif instruction[pointer] == '89':
+                self.LISTCONV()
             elif instruction[pointer] == '00':
                 sys.exit(0)
             pointer += 1
@@ -540,6 +543,11 @@ class main(object):
 
     def INTCONV(self):
         to_append = int(self.memory[len(self.memory)-1])
+        self.memory.pop()
+        self.memory.append(to_append)
+
+    def LISTCONV(self):
+        to_append = list(self.memory[len(self.memory)-1])
         self.memory.pop()
         self.memory.append(to_append)
 
