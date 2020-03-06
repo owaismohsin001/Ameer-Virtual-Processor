@@ -92,6 +92,7 @@ from traceback import print_tb, format_exception
 #    86 - SETUP_EXCEPT                       #
 #    87 - END_EXCEPT                         #
 #    88 - IFEXCEPTION                        #
+#    89 - LISTCONV                           #
 #############___Unimplemented___##############
 #                                            #
 #                                            #
@@ -224,7 +225,8 @@ class main(object):
             "85": lambda x: self.PUSH_LAST(*x),
             "86": lambda x: self.SETUP_EXCEPT(),
             "87": lambda x: self.END_EXCEPT(),
-            "88": lambda x: self.IFEXCEPTION(*x)
+            "88": lambda x: self.IFEXCEPTION(*x),
+            "89": lambda x: self.LISTCONV()
         }
         self.main(argv)
 
@@ -466,6 +468,11 @@ class main(object):
 
     def INTCONV(self):
         to_append = int(self.memory[len(self.memory)-1])
+        self.memory.pop()
+        self.memory.append(to_append)
+
+    def LISTCONV(self):
+        to_append = list(self.memory[len(self.memory)-1])
         self.memory.pop()
         self.memory.append(to_append)
 
