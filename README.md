@@ -179,4 +179,4 @@ What follows is a (hopefully) comprehensive description of each instruction that
 
 **85 - PUSH_LAST |** Pushes the last heap frame's onto the memory.
 
-Hey, btw, assembly for these instructions will be created as soon as I am satisfied with instruction themselves.
+Hey, btw, assembly for these instructions is already [avalible here](https://github.com/ameerwasi001/AVP-Assembler).
