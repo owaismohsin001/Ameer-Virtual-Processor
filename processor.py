@@ -125,13 +125,37 @@ class Frame(object):
         self.__remove_callStack()
         return self.Frame[key]
 
+class Memory:
+    def __init__(self):
+        self.memory = []
+
+    def __getitem__(self, key):
+        return self.memory[key]
+
+    def __setitem__(self, key, value):
+        self.memory[key] = value
+
     def __delitem__(self, key):
-        self.__remove_callStack()
-        del self.Frame[key]
+        del self.memory[key]
+
+    def __len__(self):
+        return len(self.memory)
+
+    def __iter__(self):
+        return iter(self.memory)
+
+    def __repr__(self):
+        return f"{self.memory}"
+
+    def pop(self, *args):
+        return self.memory.pop(*args)
+
+    def append(self, *args):
+        self.memory.append(*args)
 
 class main(object):
     def __init__(self, argv):
-        self.memory = []
+        self.memory = Memory()
         self.storage = {}
         self.register = {}
         self.memory_frame = Frame()
